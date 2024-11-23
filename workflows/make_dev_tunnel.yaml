@@ -1,0 +1,65 @@
+name: Setup tunnel for local dev environment (https://app.clickup.com/9015632482/v/dc/8cnz8k2-75/8cnz8k2-2775)
+
+on:
+  workflow_dispatch:
+    inputs:
+      exthost:
+        description: "External host you redirect your traffic to"
+        required: true
+        default: "video.evist.ai"
+      extport:
+        description: "External port you redirect your traffic to in range [10100;10499]"
+        required: true
+      environment:
+        description: "Developer Environment"
+        required: true
+        default: "dev1"
+        type: choice
+        options:
+          - dev1
+          - dev2
+          - dev3
+          - dev4
+          - dev5
+
+jobs:
+  build-and-push:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v3
+
+      - name: Log in to Scaleway Container Registry
+        run: |
+          ARTIFACTORY_ENV=staging
+          REPO_NAME="$(basename ${{ github.repository }})"
+          echo "CONTAINER_PATH=rg.${{ secrets.SCW_REGION }}.scw.cloud/${{secrets.SCW_NAMESPACE}}-${ARTIFACTORY_ENV}/${REPO_NAME}:${{github.sha}}" >> $GITHUB_ENV
+          echo "REPO_NAME=${REPO_NAME}" >> $GITHUB_ENV
+          echo "ARTIFACTORY_ENV=${ARTIFACTORY_ENV}" >> $GITHUB_ENV
+          echo ${{secrets.SCW_SECRET_KEY}} | docker login rg.${{secrets.SCW_REGION}}.scw.cloud -u ${{secrets.SCW_ACCESS_KEY}} --password-stdin
+
+      - name: Checkout deployed configuration
+        uses: actions/checkout@v3
+        with:
+          repository: incidentware/kubeconfigs
+          ref: main
+          path: kubeconfigs
+          token: ${{ secrets.ORG_REPO_ROBOT_SECRET }}
+
+      - name: Deploy dev configuration to cluster
+        run: |
+          GH_TOKEN=${{ secrets.ORG_REPO_ROBOT_SECRET }}
+          cd $GITHUB_WORKSPACE/kubeconfigs
+          git config user.name "${{secrets.ORG_REPO_ROBOT_USERNAME}}"
+          git config user.email "${{secrets.ORG_REPO_ROBOT_EMAIL}}"
+          target_port=$(expr ${{github.event.inputs.extport}} + 10000)
+          python3 update.py --environment ${{github.event.inputs.environment}} --service ${REPO_NAME} --ext-host ${{github.event.inputs.exthost}} --ext-port ${target_port}
+          git add ${{github.event.inputs.environment}}
+          git commit -m "Updated ${REPO_NAME} in environment ${{github.event.inputs.environment}} with container ${CONTAINER_PATH}" -a
+          git push
+          cd $GITHUB_WORKSPACE
+
+      - name: Finalize
+        run: |
+          echo "Job complete! You can test your deployment with url https://${{github.event.inputs.environment}}.evist.ai . Don't forget to establish SSH tunnel"

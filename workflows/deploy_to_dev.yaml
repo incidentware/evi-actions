@@ -1,0 +1,65 @@
+name: Deploy branch to Dev environment
+
+on:
+  workflow_dispatch:
+    inputs:
+      environment:
+        description: "Developer Environment"
+        required: true
+        default: "dev1"
+        type: choice
+        options:
+          - dev1
+          - dev2
+          - dev3
+          - dev4
+          - dev5
+
+jobs:
+  build-and-push:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v3
+
+      - name: Log in to Scaleway Container Registry
+        run: |
+          ARTIFACTORY_ENV=staging
+          REPO_NAME="$(basename ${{ github.repository }})"
+          echo "CONTAINER_PATH=rg.${{ secrets.SCW_REGION }}.scw.cloud/${{secrets.SCW_NAMESPACE}}-${ARTIFACTORY_ENV}/${REPO_NAME}:${{github.sha}}" >> $GITHUB_ENV
+          echo "REPO_NAME=${REPO_NAME}" >> $GITHUB_ENV
+          echo "ARTIFACTORY_ENV=${ARTIFACTORY_ENV}" >> $GITHUB_ENV
+          echo ${{secrets.SCW_SECRET_KEY}} | docker login rg.${{secrets.SCW_REGION}}.scw.cloud -u ${{secrets.SCW_ACCESS_KEY}} --password-stdin
+
+      - name: Build and Tag Docker Image
+        run: |
+          docker build --build-arg BUILD_ENVIRONMENT=${ARTIFACTORY_ENV} -t $CONTAINER_PATH .
+
+      - name: Push Docker Image to Docker Hub for main branch
+        run: |
+          docker push $CONTAINER_PATH
+
+      - name: Checkout deployed configuration
+        uses: actions/checkout@v3
+        with:
+          repository: incidentware/kubeconfigs
+          ref: main
+          path: kubeconfigs
+          token: ${{ secrets.ORG_REPO_ROBOT_SECRET }}
+
+      - name: Deploy container
+        run: |
+          GH_TOKEN=${{ secrets.ORG_REPO_ROBOT_SECRET }}
+          cd $GITHUB_WORKSPACE/kubeconfigs
+          git config user.name "${{secrets.ORG_REPO_ROBOT_USERNAME}}"
+          git config user.email "${{secrets.ORG_REPO_ROBOT_EMAIL}}"
+          python3 update.py --environment ${{github.event.inputs.environment}} --service ${REPO_NAME} --new-image $CONTAINER_PATH
+          git add ${{github.event.inputs.environment}}
+          git commit -m "Updated ${REPO_NAME} in environment ${{github.event.inputs.environment}} with container ${CONTAINER_PATH}" -a
+          git push
+          cd $GITHUB_WORKSPACE
+
+      - name: Finalize
+        run: |
+          echo "Job complete! You can test your deployment with url https://${{github.event.inputs.environment}}.evist.ai"
