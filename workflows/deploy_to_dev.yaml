@@ -1,19 +1,11 @@
 name: Deploy branch to Dev environment
 
 on:
-  workflow_dispatch:
+  workflow_call:
     inputs:
       environment:
-        description: "Developer Environment"
         required: true
-        default: "dev1"
-        type: choice
-        options:
-          - dev1
-          - dev2
-          - dev3
-          - dev4
-          - dev5
+        type: string
 
 jobs:
   build-and-push:

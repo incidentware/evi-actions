@@ -1,10 +1,7 @@
 name: Build Docker Image check
 
 on:
-  pull_request:
-    branches:
-      - main  
-      - prod
+  workflow_call
 
 env:
   environment: ${{ github.ref == 'refs/heads/prod' && 'prod' || 'staging' }}
