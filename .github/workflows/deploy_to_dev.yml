@@ -14,7 +14,8 @@ jobs:
     steps:
       - name: Checkout code
         uses: actions/checkout@v3
-
+        env:
+          GITHUB_TOKEN: ${{ secrets.ORG_REPO_ROBOT_SECRET }}
       - name: Log in to Scaleway Container Registry
         run: |
           ARTIFACTORY_ENV=staging
@@ -34,6 +35,8 @@ jobs:
 
       - name: Checkout deployed configuration
         uses: actions/checkout@v3
+        env:
+          GITHUB_TOKEN: ${{ secrets.ORG_REPO_ROBOT_SECRET }}
         with:
           repository: incidentware/kubeconfigs
           ref: main
