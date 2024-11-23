@@ -7,6 +7,9 @@ on:
         required: true
         type: string
 
+env:
+  GITHUB_TOKEN: ${{ secrets.ORG_REPO_ROBOT_SECRET }}
+
 jobs:
   build-and-push:
     runs-on: ubuntu-latest
