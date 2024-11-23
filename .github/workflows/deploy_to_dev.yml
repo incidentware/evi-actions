@@ -13,7 +13,7 @@ jobs:
 
     steps:
       - name: Checkout code
-        uses: actions/checkout@v3
+        uses: actions/checkout@v4
         env:
           GITHUB_TOKEN: ${{ secrets.ORG_REPO_ROBOT_SECRET }}
       - name: Log in to Scaleway Container Registry
