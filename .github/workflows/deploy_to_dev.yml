@@ -45,9 +45,15 @@ jobs:
           path: kubeconfigs
           token: ${{ secrets.ORG_REPO_ROBOT_SECRET }}
 
+      - name: Set up kubectl
+        uses: azure/setup-kubectl@v3
+        with:
+          version: 'latest'
+
       - name: Deploy container
         run: |
           GH_TOKEN=${{ secrets.ORG_REPO_ROBOT_SECRET }}
+          mkdir $HOME/.kube
           echo "${SCW_KUBECONFIG_DEV}" > $HOME/.kube/config
           cd $GITHUB_WORKSPACE/kubeconfigs
           git config user.name "${{secrets.ORG_REPO_ROBOT_USERNAME}}"
