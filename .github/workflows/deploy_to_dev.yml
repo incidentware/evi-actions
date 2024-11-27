@@ -59,9 +59,7 @@ jobs:
           git config user.email "${{secrets.ORG_REPO_ROBOT_EMAIL}}"
           python3 update.py --environment ${{github.event.inputs.environment}} --service ${REPO_NAME} --new-image $CONTAINER_PATH
           kubectl apply -f ${{github.event.inputs.environment}}/services/${REPO_NAME}.yaml
-          kubectl apply -f ${{github.event.inputs.environment}}/deployments/${REPO_NAME}.yaml
-          POD_NAME=$(kubectl get pods | grep backend | grep ${{github.event.inputs.environment}} | grep -v Running | awk '{print $1}')
-          kubectl wait --for=condition=Ready pod/$POD_NAME --timeout=90s
+          kubectl apply -f --wait --timeout=90s ${{github.event.inputs.environment}}/deployments/${REPO_NAME}.yaml
 
           git add ${{github.event.inputs.environment}}
           git commit -m "Updated ${REPO_NAME} in environment ${{github.event.inputs.environment}} with container ${CONTAINER_PATH}" -a
