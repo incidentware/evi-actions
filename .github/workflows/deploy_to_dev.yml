@@ -53,7 +53,7 @@ jobs:
         run: |
           GH_TOKEN=${{ secrets.ORG_REPO_ROBOT_SECRET }}
           mkdir $HOME/.kube
-          echo "${{secrets.SCW_KUBECONFIG_DEV}}" > $HOME/.kube/config
+          echo "${{secrets.SCW_KUBECONFIG}}" > $HOME/.kube/config
           cd $GITHUB_WORKSPACE/kubeconfigs
           git config user.name "${{secrets.ORG_REPO_ROBOT_USERNAME}}"
           git config user.email "${{secrets.ORG_REPO_ROBOT_EMAIL}}"
