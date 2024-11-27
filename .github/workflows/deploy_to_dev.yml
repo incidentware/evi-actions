@@ -60,7 +60,7 @@ jobs:
           python3 update.py --environment ${{github.event.inputs.environment}} --service ${REPO_NAME} --new-image $CONTAINER_PATH
           kubectl apply -f ${{github.event.inputs.environment}}/services/${REPO_NAME}.yaml
           kubectl apply -f ${{github.event.inputs.environment}}/deployments/${REPO_NAME}.yaml
-          POD_NAME=$(kubectl get pods | grep backend | grep dev1 | grep -v Running | awk '{print $1}')
+          POD_NAME=$(kubectl get pods | grep backend | grep ${{github.event.inputs.environment}} | grep -v Running | awk '{print $1}')
           kubectl wait --for=condition=Ready pod/$POD_NAME --timeout=90s
 
           git add ${{github.event.inputs.environment}}
