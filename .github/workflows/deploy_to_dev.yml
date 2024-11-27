@@ -61,7 +61,7 @@ jobs:
           kubectl apply -f ${{github.event.inputs.environment}}/services/${REPO_NAME}.yaml
           kubectl apply -f ${{github.event.inputs.environment}}/deployments/${REPO_NAME}.yaml
           POD_NAME=$(kubectl get pods | grep backend | grep dev1 | grep -v Running | awk '{print $1}')
-          kubectl wait --for=condition=Ready pod/$POD_NAME -n $NAMESPACE --timeout=90s
+          kubectl wait --for=condition=Ready pod/$POD_NAME --timeout=90s
 
           git add ${{github.event.inputs.environment}}
           git commit -m "Updated ${REPO_NAME} in environment ${{github.event.inputs.environment}} with container ${CONTAINER_PATH}" -a
