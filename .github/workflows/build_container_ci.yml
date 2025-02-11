@@ -1,7 +1,12 @@
 name: Build Docker Image check
 
 on:
-  workflow_call: {}
+  workflow_call:
+    inputs:
+      buildtype:
+        required: false
+        type: string
+        default: "cloud"
 
 env:
   environment: ${{ github.ref == 'refs/heads/prod' && 'prod' || 'staging' }}
@@ -16,5 +21,5 @@ jobs:
 
       - name: Build and Tag Docker Image
         run: |
-          docker build --build-arg BUILD_ENVIRONMENT=${{env.environment}} -t $(basename ${{ github.repository }}):${{github.sha}} .
+          docker build --build-arg BUILD_ENVIRONMENT=${{env.environment}} --build-arg CONFIGURATION_TYPE=${{env.buildtype}} -t $(basename ${{ github.repository }}):${{github.sha}} .
 
