@@ -1,7 +1,12 @@
 name: Build and Push Docker Image
 
 on:
-  workflow_call: {}
+  workflow_call:
+    inputs:
+      buildtype:
+        required: false
+        type: string
+        default: "cloud"
 
 env:
   environment: ${{ github.ref == 'refs/heads/prod' && 'prod' || 'staging' }}
@@ -17,13 +22,13 @@ jobs:
       - name: Log in to Scaleway Container Registry
         run: |
           REPO_NAME="$(basename ${{ github.repository }})"
-          echo "CONTAINER_PATH=rg.${{ secrets.SCW_REGION }}.scw.cloud/${{secrets.SCW_NAMESPACE}}-${{env.environment}}/${REPO_NAME}:${{github.sha}}" >> $GITHUB_ENV
+          echo "CONTAINER_PATH=rg.${{ secrets.SCW_REGION }}.scw.cloud/${{secrets.SCW_NAMESPACE}}-${{env.environment}}/${REPO_NAME}-${{env.buildtype}}:${{github.sha}}" >> $GITHUB_ENV
           echo "REPO_NAME=${REPO_NAME}" >> $GITHUB_ENV
           echo ${{secrets.SCW_SECRET_KEY}} | docker login rg.${{secrets.SCW_REGION}}.scw.cloud -u ${{secrets.SCW_ACCESS_KEY}} --password-stdin
 
       - name: Build and Tag Docker Image
         run: |
-          docker build --build-arg BUILD_ENVIRONMENT=${{env.environment}} -t $CONTAINER_PATH .
+          docker build --build-arg BUILD_ENVIRONMENT=${{env.environment}} --build-arg CONFIGURATION_TYPE=${{env.buildtype}} -t $CONTAINER_PATH .
 
       - name: Push Docker Image to Docker Hub for main branch
         run: |
@@ -41,10 +46,11 @@ jobs:
         run: |
           GH_TOKEN=${{ secrets.ORG_REPO_ROBOT_SECRET }}
           cd $GITHUB_WORKSPACE/kubeconfigs
+          [ "${{env.buildtype}}" = "cloud" ] && ENVIRONMENT="${{env.environment}}" || ENVIRONMENT="${{env.buildtype}}"
           git config user.name "${{secrets.ORG_REPO_ROBOT_USERNAME}}"
           git config user.email "${{secrets.ORG_REPO_ROBOT_EMAIL}}"
-          python3 update.py --environment ${{env.environment}} --service ${REPO_NAME} --new-image $CONTAINER_PATH
-          git commit -m "Updated ${REPO_NAME} in environment ${{env.environment}} with container ${CONTAINER_PATH}" -a
+          python3 update.py --environment $ENVIRONMENT --service ${REPO_NAME} --new-image $CONTAINER_PATH
+          git commit -m "Updated ${REPO_NAME} in environment ${{env.environment}} with build type ${{env.buildtype}} with container ${CONTAINER_PATH}" -a
           git push
           cd $GITHUB_WORKSPACE
 
