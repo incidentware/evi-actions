@@ -10,7 +10,7 @@ on:
       arch:
         required: false
         type: string
-        default: "AMD64"
+        default: "x64"
 
 env:
   environment: ${{ github.ref == 'refs/heads/prod' && 'prod' || 'staging' }}
