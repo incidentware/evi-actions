@@ -7,17 +7,17 @@ on:
         required: false
         type: string
         default: "cloud"
-      runner:
+      arch:
         required: false
         type: string
-        default: "ubuntu-latest"
+        default: "AMD64"
 
 env:
   environment: ${{ github.ref == 'refs/heads/prod' && 'prod' || 'staging' }}
 
 jobs:
   build-and-push:
-    runs-on: ${{inputs.runner}}
+    runs-on: [linux, ${{inputs.arch}}]
     steps:
       - name: Checkout code
         uses: actions/checkout@v3
