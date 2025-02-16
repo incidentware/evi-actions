@@ -7,6 +7,10 @@ on:
         required: false
         type: string
         default: "cloud"
+      runner:
+        required: false
+        type: string
+        default: "ubuntu-latest"
 
 env:
   environment: ${{ github.ref == 'refs/heads/prod' && 'prod' || 'staging' }}
@@ -14,7 +18,7 @@ env:
 
 jobs:
   build-and-push:
-    runs-on: ubuntu-latest
+    runs-on: ${{ inputs.runner }}
 
     steps:
       - name: Checkout code
