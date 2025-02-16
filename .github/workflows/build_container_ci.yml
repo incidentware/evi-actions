@@ -10,14 +10,14 @@ on:
       arch:
         required: false
         type: string
-        default: "x64"
+        default: "AMD64"
 
 env:
   environment: ${{ github.ref == 'refs/heads/prod' && 'prod' || 'staging' }}
 
 jobs:
   build-and-push:
-    runs-on: [linux, "${{inputs.arch}}"]
+    runs-on: ${{ inputs.arch == 'AMD64' && 'ubuntu-latest' || [linux, ARM64] }}
     steps:
       - name: Checkout code
         uses: actions/checkout@v3
