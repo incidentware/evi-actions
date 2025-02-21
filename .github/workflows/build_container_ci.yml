@@ -14,6 +14,7 @@ on:
 
 env:
   environment: ${{ github.ref == 'refs/heads/prod' && 'prod' || 'staging' }}
+  buildtype: ${{inputs.buildtype}}
 
 jobs:
   build-and-push:
