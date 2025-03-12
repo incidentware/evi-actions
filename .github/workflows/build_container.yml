@@ -13,7 +13,6 @@ on:
         default: "ubuntu-latest"
 
 env:
-  environment: ${{ github.ref == 'refs/heads/prod' && 'prod' || 'staging' }}
   buildtype: ${{inputs.buildtype}}
 
 jobs:
@@ -26,13 +25,13 @@ jobs:
       - name: Log in to Scaleway Container Registry
         run: |
           REPO_NAME="$(basename ${{ github.repository }})"
-          echo "CONTAINER_PATH=rg.${{ secrets.SCW_REGION }}.scw.cloud/${{secrets.SCW_NAMESPACE}}-${{env.environment}}/${REPO_NAME}-${{env.buildtype}}:${{github.sha}}" >> $GITHUB_ENV
+          echo "CONTAINER_PATH=rg.${{ secrets.SCW_REGION }}.scw.cloud/${{secrets.SCW_NAMESPACE}}/${REPO_NAME}-${{env.buildtype}}:${{github.sha}}" >> $GITHUB_ENV
           echo "REPO_NAME=${REPO_NAME}" >> $GITHUB_ENV
           echo ${{secrets.SCW_SECRET_KEY}} | docker login rg.${{secrets.SCW_REGION}}.scw.cloud -u ${{secrets.SCW_ACCESS_KEY}} --password-stdin
 
       - name: Build and Tag Docker Image
         run: |
-          docker build --build-arg BUILD_ENVIRONMENT=${{env.environment}} --build-arg CONFIGURATION_TYPE=${{env.buildtype}} -t $CONTAINER_PATH .
+          docker build --build-arg CONFIGURATION_TYPE=${{env.buildtype}} -t $CONTAINER_PATH .
 
       - name: Push Docker Image to Docker Hub for main branch
         run: |
