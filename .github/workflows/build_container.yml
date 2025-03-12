@@ -49,11 +49,11 @@ jobs:
         run: |
           GH_TOKEN=${{ secrets.ORG_REPO_ROBOT_SECRET }}
           cd $GITHUB_WORKSPACE/kubeconfigs
-          [ "${{env.buildtype}}" = "cloud" ] && ENVIRONMENT="${{env.environment}}" || ENVIRONMENT="${{env.buildtype}}"
+          [ "${{env.buildtype}}" = "cloud" ] && ENVIRONMENT="staging" || ENVIRONMENT="${{env.buildtype}}"
           git config user.name "${{secrets.ORG_REPO_ROBOT_USERNAME}}"
           git config user.email "${{secrets.ORG_REPO_ROBOT_EMAIL}}"
           python3 update.py --environment $ENVIRONMENT --service ${REPO_NAME} --new-image $CONTAINER_PATH
-          git commit -m "Updated ${REPO_NAME} in environment ${{env.environment}} with build type ${{env.buildtype}} with container ${CONTAINER_PATH}" -a
+          git commit -m "Updated ${REPO_NAME} in environment $ENVIRONMENT with build type ${{env.buildtype}} with container ${CONTAINER_PATH}" -a
           git push
           cd $GITHUB_WORKSPACE
 
