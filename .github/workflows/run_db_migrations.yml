@@ -32,7 +32,10 @@ jobs:
 
       - name: Set environment variables
         run: |
-          echo "DATABASE_URL=postgres://${{ secrets.DB_USER }}:${{ secrets.DB_PASSWORD }}@{{ secrets.DB_HOST }}/${{ secrets.DB_NAME }}?sslmode=disable" >> $GITHUB_ENV
+          echo "DB_USER=${{ secrets.DB_USER }}" >> $GITHUB_ENV
+          echo "DB_PASSWORD=${{ secrets.DB_PASSWORD }}" >> $GITHUB_ENV
+          echo "DB_HOST=${{ secrets.DB_HOST }}" >> $GITHUB_ENV
+          echo "DB_NAME=${{ secrets.DB_NAME }}" >> $GITHUB_ENV
 
       - name: Install migrate CLI
         run: go install -tags 'postgres' github.com/golang-migrate/migrate/v4/cmd/migrate@latest
