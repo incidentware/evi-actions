@@ -24,6 +24,10 @@ jobs:
     steps:
       - name: Checkout code
         uses: actions/checkout@v3
+        with:
+          repository: incidentware/db
+          ref: main
+          path: db
 
       - name: Set up Go
         uses: actions/setup-go@v5
@@ -35,5 +39,6 @@ jobs:
 
       - name: Run database migrations
         run: |
+          cd db
           make migrate-up
 
