@@ -24,5 +24,5 @@ jobs:
 
       - name: Build and Tag Docker Image
         run: |
-          docker build --build-arg CONFIGURATION_TYPE=${{env.buildtype}} -t $(basename ${{ github.repository }}):${{github.sha}} .
+          docker build --build-arg CONFIGURATION_TYPE=${{env.buildtype}} -t $(basename ${{ github.repository }}):${{github.sha}} -f Dockerfile.${{env.buildtype}} .
 
