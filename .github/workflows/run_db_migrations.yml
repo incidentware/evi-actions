@@ -11,12 +11,15 @@ on:
         required: true
       DB_HOST:
         required: true
+      ORG_REPO_ROBOT_SECRET:
+        required: true
 
 env:
   DB_USER: ${{ secrets.DB_USER }}
   DB_PASSWORD: ${{ secrets.DB_PASSWORD }}
   DB_HOST: ${{ secrets.DB_HOST }}
   DB_NAME: ${{ secrets.DB_NAME }}
+  ORG_REPO_ROBOT_SECRET: ${{ secrets.ORG_REPO_ROBOT_SECRET }}
 
 jobs:
   build-and-push:
@@ -28,6 +31,7 @@ jobs:
           repository: incidentware/db
           ref: main
           path: db
+          token: ${{ secrets.ORG_REPO_ROBOT_SECRET }}
 
       - name: Set up Go
         uses: actions/setup-go@v5
