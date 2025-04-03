@@ -22,6 +22,13 @@ jobs:
       - name: Checkout code
         uses: actions/checkout@v3
 
+      - name: Log in to Scaleway Container Registry
+        run: |
+          REPO_NAME="$(basename ${{ github.repository }})"
+          echo "CONTAINER_PATH=rg.${{ secrets.SCW_REGION }}.scw.cloud/${{secrets.SCW_NAMESPACE}}/${REPO_NAME}-${{env.buildtype}}:${{github.sha}}" >> $GITHUB_ENV
+          echo "REPO_NAME=${REPO_NAME}" >> $GITHUB_ENV
+          echo ${{secrets.SCW_SECRET_KEY}} | docker login rg.${{secrets.SCW_REGION}}.scw.cloud -u ${{secrets.SCW_ACCESS_KEY}} --password-stdin
+
       - name: Build and Tag Docker Image
         run: |
           docker build --build-arg CONFIGURATION_TYPE=${{env.buildtype}} -t $(basename ${{ github.repository }}):${{github.sha}} -f Dockerfile.${{env.buildtype}} .
