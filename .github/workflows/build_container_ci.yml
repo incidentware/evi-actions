@@ -8,19 +8,19 @@ on:
         type: string
         default: "cloud"
       arch:
+        type: choice
+        options:
+          - X64
+          - ARM64
         required: false
-        type: string
-        default: "ubuntu-latest"
+        default: X64
 
 env:
   buildtype: ${{inputs.buildtype}}
 
 jobs:
   build-and-push:
-    strategy:
-      matrix:
-        label: [ ${{ inputs.arch }} ]
-    runs-on: [self-hosted, ${{ matrix.label }}]
+    runs-on: [self-hosted, ${{ inputs.arch }}]
     steps:
       - name: Checkout code
         uses: actions/checkout@v3
