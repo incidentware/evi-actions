@@ -17,7 +17,7 @@ env:
 
 jobs:
   build-and-push:
-    runs-on: ${{ inputs.arch }}
+    runs-on: [self-hosted, ${{ inputs.arch }}]
     steps:
       - name: Checkout code
         uses: actions/checkout@v3
