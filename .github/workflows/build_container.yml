@@ -53,7 +53,9 @@ jobs:
           [ "${{env.buildtype}}" = "cloud" ] && ENVIRONMENT="staging" || ENVIRONMENT="${{env.buildtype}}"
           git config user.name "${{secrets.ORG_REPO_ROBOT_USERNAME}}"
           git config user.email "${{secrets.ORG_REPO_ROBOT_EMAIL}}"
-          pip install pyyaml
+          apt update
+          apt install python3-pip -y
+          pip3 install pyyaml
           python update.py --environment $ENVIRONMENT --service ${REPO_NAME} --new-image $CONTAINER_PATH
           git commit -m "Updated ${REPO_NAME} in environment $ENVIRONMENT with build type ${{env.buildtype}} with container ${CONTAINER_PATH}" -a
           git push
