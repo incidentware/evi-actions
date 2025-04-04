@@ -53,8 +53,7 @@ jobs:
           [ "${{env.buildtype}}" = "cloud" ] && ENVIRONMENT="staging" || ENVIRONMENT="${{env.buildtype}}"
           git config user.name "${{secrets.ORG_REPO_ROBOT_USERNAME}}"
           git config user.email "${{secrets.ORG_REPO_ROBOT_EMAIL}}"
-          apt update
-          apt install python3-pip -y
+          RUN curl -sS https://bootstrap.pypa.io/get-pip.py | python3.12
           pip3 install pyyaml
           python update.py --environment $ENVIRONMENT --service ${REPO_NAME} --new-image $CONTAINER_PATH
           git commit -m "Updated ${REPO_NAME} in environment $ENVIRONMENT with build type ${{env.buildtype}} with container ${CONTAINER_PATH}" -a
