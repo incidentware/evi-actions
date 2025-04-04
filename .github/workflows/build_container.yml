@@ -20,7 +20,7 @@ env:
 
 jobs:
   build-and-push:
-    runs-on: [self-hosted, ${{ input.arch }}]
+    runs-on: [self-hosted, "${{ input.arch }}"]
 
     steps:
       - name: Checkout code
