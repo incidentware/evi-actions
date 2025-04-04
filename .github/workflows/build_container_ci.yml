@@ -8,10 +8,7 @@ on:
         type: string
         default: "cloud"
       arch:
-        type: choice
-        options:
-          - X64
-          - ARM64
+        type: string
         required: false
         default: X64
 
