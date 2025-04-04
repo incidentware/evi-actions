@@ -17,7 +17,10 @@ env:
 
 jobs:
   build-and-push:
-    runs-on: [self-hosted, ${{ inputs.arch }}]
+    strategy:
+      matrix:
+        label: [ ${{ inputs.arch }} ]
+    runs-on: [self-hosted, ${{ matrix.label }}]
     steps:
       - name: Checkout code
         uses: actions/checkout@v3
