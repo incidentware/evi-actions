@@ -19,7 +19,7 @@ jobs:
   build-and-push:
     strategy:
       matrix:
-        label: [ ${{ inputs.arch }} ]
+        label: [ "ubuntu-latest", "ARM64" ]
     runs-on: [self-hosted, ${{ matrix.label }}]
     steps:
       - name: Checkout code
