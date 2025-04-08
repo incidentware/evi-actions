@@ -27,7 +27,7 @@ jobs:
 
       - name: Build and Tag Docker Image
         run: |
-          docker build --build-arg BUILD_ENVIRONMENT=${ARTIFACTORY_ENV} -t $CONTAINER_PATH .
+          docker build --build-arg BUILD_ENVIRONMENT=${ARTIFACTORY_ENV} -t $CONTAINER_PATH . -f Dockerfile.cloud
 
       - name: Push Docker Image to Docker Hub for main branch
         run: |
