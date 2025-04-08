@@ -57,6 +57,8 @@ jobs:
           cd $GITHUB_WORKSPACE/kubeconfigs
           git config user.name "${{secrets.ORG_REPO_ROBOT_USERNAME}}"
           git config user.email "${{secrets.ORG_REPO_ROBOT_EMAIL}}"
+          apt install python3-yaml || true
+          pip3 install pyyaml || true
           python3 update.py --environment ${{github.event.inputs.environment}} --service ${REPO_NAME} --new-image $CONTAINER_PATH
           kubectl apply -f ${{github.event.inputs.environment}}/services/${REPO_NAME}.yaml
           kubectl apply --wait --timeout=60s -f ${{github.event.inputs.environment}}/deployments/${REPO_NAME}.yaml
