@@ -51,7 +51,7 @@ jobs:
           target_port=$(expr ${{github.event.inputs.extport}} + 10000)
           python3 update.py --environment ${{github.event.inputs.environment}} --service ${REPO_NAME} --ext-host ${{github.event.inputs.exthost}} --ext-port ${target_port}
           git add ${{github.event.inputs.environment}}
-          git commit -m "Updated ${REPO_NAME} in environment ${{github.event.inputs.environment}} with container ${CONTAINER_PATH}" -a
+          git commit --allow-empty -m "Updated ${REPO_NAME} in environment ${{github.event.inputs.environment}} with container ${CONTAINER_PATH}" -a
           git push
           cd $GITHUB_WORKSPACE
 
