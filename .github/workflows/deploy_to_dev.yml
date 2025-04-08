@@ -9,7 +9,7 @@ on:
 
 jobs:
   build-and-push:
-    runs-on: [self-hosted]
+    runs-on: [self-hosted, X64]
 
     steps:
       - name: Checkout code
