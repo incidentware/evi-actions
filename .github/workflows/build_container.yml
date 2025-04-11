@@ -38,6 +38,11 @@ jobs:
         run: |
           docker push $CONTAINER_PATH
 
+      - name: Install py packages
+        run: |
+          apt install python3-yaml || true
+          pip3 install pyyaml || true
+
       - name: Checkout deployed configuration
         uses: actions/checkout@v3
         with:
@@ -53,8 +58,6 @@ jobs:
           [ "${{env.buildtype}}" = "cloud" ] && ENVIRONMENT="staging" || ENVIRONMENT="${{env.buildtype}}"
           git config user.name "${{secrets.ORG_REPO_ROBOT_USERNAME}}"
           git config user.email "${{secrets.ORG_REPO_ROBOT_EMAIL}}"
-          apt install python3-yaml || true
-          pip3 install pyyaml || true
           python3 update.py --environment $ENVIRONMENT --service ${REPO_NAME} --new-image $CONTAINER_PATH
           git commit -m "Updated ${REPO_NAME} in environment $ENVIRONMENT with build type ${{env.buildtype}} with container ${CONTAINER_PATH}" -a
           git push
