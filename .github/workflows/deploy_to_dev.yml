@@ -6,10 +6,18 @@ on:
       environment:
         required: true
         type: string
+      buildtype:
+        required: false
+        type: string
+        default: "cloud"
+      arch:
+        type: string
+        required: false
+        default: X64
 
 jobs:
   build-and-push:
-    runs-on: ${{ fromJSON(format('["self-hosted", "{0}"]', inputs.environment.startsWith('edge') && 'arm64' || 'X64')) }}
+    runs-on: [self-hosted, "${{inputs.arch}}"]
 
     steps:
       - name: Checkout code
@@ -27,7 +35,7 @@ jobs:
 
       - name: Build and Tag Docker Image
         run: |
-          docker build --build-arg BUILD_ENVIRONMENT=${ARTIFACTORY_ENV} -t $CONTAINER_PATH . -f Dockerfile.${{ inputs.environment && startsWith(inputs.environment, 'edge') && 'edge' || 'cloud' }}
+          docker build --build-arg BUILD_ENVIRONMENT=${ARTIFACTORY_ENV} -t $CONTAINER_PATH . -f Dockerfile.${{inputs.buildtype}}
 
       - name: Push Docker Image to Docker Hub for main branch
         run: |
