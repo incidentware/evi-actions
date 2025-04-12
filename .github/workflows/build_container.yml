@@ -63,7 +63,7 @@ jobs:
           update_and_push() {
             python3 update.py --environment "$ENVIRONMENT" --service "${REPO_NAME}" --new-image "$CONTAINER_PATH"
             git commit -m "Updated ${REPO_NAME} in environment $ENVIRONMENT with build type ${{env.buildtype}} with container ${CONTAINER_PATH}" -a
-            git push origin master
+            git push
           }
 
           MAX_ATTEMPTS=5
@@ -73,10 +73,9 @@ jobs:
           while [ $ATTEMPT -le $MAX_ATTEMPTS ]; do
             echo "Attempt $ATTEMPT of $MAX_ATTEMPTS"
 
-            # Reset to the latest remote master before trying
             git fetch origin
-            git reset --hard origin/master
-            git pull origin master
+            git reset --hard origin/main
+            git pull
 
             if update_and_push; then
               SUCCESS=1
