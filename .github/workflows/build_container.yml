@@ -58,8 +58,40 @@ jobs:
           [ "${{env.buildtype}}" = "cloud" ] && ENVIRONMENT="staging" || ENVIRONMENT="${{env.buildtype}}"
           git config user.name "${{secrets.ORG_REPO_ROBOT_USERNAME}}"
           git config user.email "${{secrets.ORG_REPO_ROBOT_EMAIL}}"
-          python3 update.py --environment $ENVIRONMENT --service ${REPO_NAME} --new-image $CONTAINER_PATH
-          git commit -m "Updated ${REPO_NAME} in environment $ENVIRONMENT with build type ${{env.buildtype}} with container ${CONTAINER_PATH}" -a
-          git push
+
+          # Function to run update, commit, and push
+          update_and_push() {
+            python3 update.py --environment "$ENVIRONMENT" --service "${REPO_NAME}" --new-image "$CONTAINER_PATH"
+            git commit -m "Updated ${REPO_NAME} in environment $ENVIRONMENT with build type ${{env.buildtype}} with container ${CONTAINER_PATH}" -a
+            git push origin master
+          }
+
+          MAX_ATTEMPTS=5
+          ATTEMPT=1
+          SUCCESS=0
+
+          while [ $ATTEMPT -le $MAX_ATTEMPTS ]; do
+            echo "Attempt $ATTEMPT of $MAX_ATTEMPTS"
+
+            # Reset to the latest remote master before trying
+            git fetch origin
+            git reset --hard origin/master
+            git pull origin master
+
+            if update_and_push; then
+              SUCCESS=1
+              echo "Push succeeded on attempt $ATTEMPT"
+              break
+            else
+              echo "Push failed on attempt $ATTEMPT"
+              ATTEMPT=$((ATTEMPT + 1))
+              sleep 2 
+            fi
+          done
+
+          if [ $SUCCESS -ne 1 ]; then
+            echo "ERROR: Failed to push after $MAX_ATTEMPTS attempts"
+            exit 1
+          fi
           cd $GITHUB_WORKSPACE
 
