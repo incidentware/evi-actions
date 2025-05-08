@@ -1,0 +1,34 @@
+# Base image for JetPack 6 (latest L4T runtime)
+FROM nvcr.io/nvidia/l4t-base:r36.2.0
+
+# Install essential dependencies
+RUN apt-get update && apt-get install -y --no-install-recommends \
+    python3-pip \
+    libjpeg-dev \
+    libopenblas-dev \
+    libomp-dev \
+    ffmpeg \
+    musl \
+    gcc \
+    cargo \
+    rust \
+    nginx \
+    && rm -rf /var/lib/apt/lists/*
+
+# Install ultralytics with minimal dependencies
+RUN pip3 install --no-cache-dir \
+    ultralytics==8.2.0 \
+    flask==2.3.3 \
+    flask-socketio==5.3.6 \
+    eventlet==0.33.3 \
+    opencv-python-headless==4.9.0.80 \
+    numpy==1.26.4 \
+    flask==3.0.3 \
+    openai==1.3.5 \
+    langchain==0.1.16 \ 
+    langchain_openai==0.0.8 \
+    langchain_community==0.0.34 \
+    pypdf==3.17.4 \
+    rapidfuzz==3.6.1 \
+    reportlab==4.1.0
+

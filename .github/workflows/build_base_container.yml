@@ -1,0 +1,32 @@
+name: Build and Push Docker Image
+
+on:
+  workflow_call:
+
+jobs:
+  build-and-push:
+    runs-on: [self-hosted, "ARM64"]
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v3
+
+      - name: Log in to Scaleway Container Registry
+        run: |
+          REPO_NAME="$(basename ${{ github.repository }})"
+          echo "CONTAINER_PATH=rg.${{ secrets.SCW_REGION }}.scw.cloud/${{secrets.SCW_NAMESPACE}}/jetson_base:${{github.sha}}" >> $GITHUB_ENV
+          echo "CONTAINER_LATEST_PATH=rg.${{ secrets.SCW_REGION }}.scw.cloud/${{secrets.SCW_NAMESPACE}}/jetson_base:latest" >> $GITHUB_ENV
+          echo "REPO_NAME=${REPO_NAME}" >> $GITHUB_ENV
+          echo ${{secrets.SCW_SECRET_KEY}} | docker login rg.${{secrets.SCW_REGION}}.scw.cloud -u ${{secrets.SCW_ACCESS_KEY}} --password-stdin
+
+      - name: Build and Tag Docker Image
+        run: |
+          docker build -t $CONTAINER_PATH -f Dockerfile.jetson  .
+
+      - name: Push Docker Image to Docker Hub for main branch
+        run: |
+          docker push $CONTAINER_PATH
+          docker tag $CONTAINER_PATH $CONTAINER_LATEST_PATH
+          docker push $CONTAINER_LATEST_PATH
+
+
