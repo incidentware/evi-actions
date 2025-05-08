@@ -1,4 +1,4 @@
-name: Build and Push Docker Image
+name: Build and Push Docker base image for Jetson devices
 
 on:
   workflow_call:
