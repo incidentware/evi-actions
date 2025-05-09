@@ -2,10 +2,8 @@ FROM nvidia/cuda:12.9.0-cudnn-runtime-ubuntu24.04
 
 # Install essential dependencies
 RUN apt-get update && apt-get install -y --no-install-recommends \
-    python3-pip \
+    python3-venv \
     libjpeg-dev \
-    libopenblas-dev \
-    libomp-dev \
     ffmpeg \
     musl \
     gcc \
@@ -17,7 +15,7 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
 RUN python3 -m venv /opt/venv
 ENV PATH="/opt/venv/bin:$PATH"
 
-RUN pip3 install torch torchvision --extra-index-url https://download.pytorch.org/whl/cu123
+RUN pip3 install torch torchvision --extra-index-url https://download.pytorch.org/whl/cu129
 
 # Install ultralytics with minimal dependencies
 RUN pip3 install --no-cache-dir \
