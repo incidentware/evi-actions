@@ -36,7 +36,7 @@ jobs:
 
       - name: Build and Tag Docker Image
         run: |
-          docker build -t $CONTAINER_PATH -f Dockerfile.jetson  .
+          docker build -t $CONTAINER_PATH -f Dockerfile.${{github.event.inputs.image_type}}  .
 
       - name: Push Docker Image to Docker Hub for main branch
         run: |
