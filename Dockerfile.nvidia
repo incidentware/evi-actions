@@ -1,0 +1,31 @@
+FROM nvcr.io/nvidia/pytorch:24.01-py3
+
+# Install essential dependencies
+RUN apt-get update && apt-get install -y --no-install-recommends \
+    python3-pip \
+    libjpeg-dev \
+    libopenblas-dev \
+    libomp-dev \
+    ffmpeg \
+    musl \
+    gcc \
+    cargo \
+    nginx \
+    && rm -rf /var/lib/apt/lists/*
+
+# Install ultralytics with minimal dependencies
+RUN pip3 install --no-cache-dir \
+    ultralytics \
+    flask \
+    flask-socketio \
+    eventlet \
+    opencv-python-headless \
+    numpy \
+    openai \
+    langchain \ 
+    langchain_openai \
+    langchain_community \
+    pypdf \
+    rapidfuzz \
+    reportlab
+

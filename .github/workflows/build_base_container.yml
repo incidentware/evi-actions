@@ -1,11 +1,28 @@
-name: Build and Push Docker base image for Jetson devices
+name: Build and Push Docker base runtime image for Jetson devices and Nvidia cloud nodes
 
 on:
   workflow_dispatch:
+    inputs:
+      image_type:
+        description: "Image type"
+        required: true
+        default: "jetson"
+        type: choice
+        options:
+          - nvidia
+          - jetson
+      arch:
+        description: "Target architecture"
+        required: true
+        default: "ARM64"
+        type: choice
+        options:
+          - X64
+          - ARM64
 
 jobs:
   build-and-push:
-    runs-on: [self-hosted, "ARM64"]
+    runs-on: [self-hosted, "${{github.event.inputs.arch}}"]
 
     steps:
       - name: Checkout code
@@ -13,10 +30,8 @@ jobs:
 
       - name: Log in to Scaleway Container Registry
         run: |
-          REPO_NAME="$(basename ${{ github.repository }})"
-          echo "CONTAINER_PATH=rg.${{ secrets.SCW_REGION }}.scw.cloud/${{secrets.SCW_NAMESPACE}}/jetson_base:${{github.sha}}" >> $GITHUB_ENV
-          echo "CONTAINER_LATEST_PATH=rg.${{ secrets.SCW_REGION }}.scw.cloud/${{secrets.SCW_NAMESPACE}}/jetson_base:latest" >> $GITHUB_ENV
-          echo "REPO_NAME=${REPO_NAME}" >> $GITHUB_ENV
+          echo "CONTAINER_PATH=rg.${{ secrets.SCW_REGION }}.scw.cloud/${{secrets.SCW_NAMESPACE}}/${{github.event.inputs.image_type}}_base:${{github.sha}}" >> $GITHUB_ENV
+          echo "CONTAINER_LATEST_PATH=rg.${{ secrets.SCW_REGION }}.scw.cloud/${{secrets.SCW_NAMESPACE}}/${{github.event.inputs.image_type}}_base:latest" >> $GITHUB_ENV
           echo ${{secrets.SCW_SECRET_KEY}} | docker login rg.${{secrets.SCW_REGION}}.scw.cloud -u ${{secrets.SCW_ACCESS_KEY}} --password-stdin
 
       - name: Build and Tag Docker Image
