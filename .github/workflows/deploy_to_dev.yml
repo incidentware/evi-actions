@@ -26,9 +26,8 @@ jobs:
           GITHUB_TOKEN: ${{ secrets.ORG_REPO_ROBOT_SECRET }}
       - name: Log in to Scaleway Container Registry
         run: |
-          ARTIFACTORY_ENV=staging
           REPO_NAME="$(basename ${{ github.repository }})"
-          echo "CONTAINER_PATH=rg.${{ secrets.SCW_REGION }}.scw.cloud/${{secrets.SCW_NAMESPACE}}-${ARTIFACTORY_ENV}/${REPO_NAME}:${{github.sha}}" >> $GITHUB_ENV
+          echo "CONTAINER_PATH=rg.${{ secrets.SCW_REGION }}.scw.cloud/${{secrets.SCW_NAMESPACE}}/${REPO_NAME}:${{github.sha}}" >> $GITHUB_ENV
           echo "REPO_NAME=${REPO_NAME}" >> $GITHUB_ENV
           echo "ARTIFACTORY_ENV=${ARTIFACTORY_ENV}" >> $GITHUB_ENV
           echo ${{secrets.SCW_SECRET_KEY}} | docker login rg.${{secrets.SCW_REGION}}.scw.cloud -u ${{secrets.SCW_ACCESS_KEY}} --password-stdin
