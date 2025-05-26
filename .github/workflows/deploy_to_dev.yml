@@ -73,7 +73,13 @@ jobs:
           kubectl rollout status deployment evi-${REPO_NAME}-${{github.event.inputs.environment}} --timeout=60s
 
           git add ${{github.event.inputs.environment}}
-          git commit -m "Updated ${REPO_NAME} in environment ${{github.event.inputs.environment}} with container ${CONTAINER_PATH}" -a
+          git add ${{github.event.inputs.environment}}
+          if ! git diff --cached --quiet; then
+            git commit -m "Updated ${REPO_NAME} in environment ${{github.event.inputs.environment}} with container ${CONTAINER_PATH}" -a
+            git push
+          else
+            echo "No changes to commit."
+          fi
           git push
           cd $GITHUB_WORKSPACE
 
