@@ -13,6 +13,11 @@ on:
         required: true
       ORG_REPO_ROBOT_SECRET:
         required: true
+    inputs:
+      ref:
+        required: false
+        type: string
+        default: ${{ github.ref }}
 
 env:
   DB_USER: ${{ secrets.DB_USER }}
@@ -29,7 +34,7 @@ jobs:
         uses: actions/checkout@v3
         with:
           repository: incidentware/db
-          ref: main
+          ref: ${{ inputs.ref }}
           path: db
           token: ${{ secrets.ORG_REPO_ROBOT_SECRET }}
 
