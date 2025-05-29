@@ -11,6 +11,10 @@ on:
         type: string
         required: false
         default: X64
+      ref:
+        type: string
+        required: false
+        default: ${{ github.ref }}
 
 env:
   buildtype: ${{inputs.buildtype}}
@@ -21,6 +25,8 @@ jobs:
     steps:
       - name: Checkout code
         uses: actions/checkout@v3
+        with:
+           ref: ${{ inputs.ref }}
 
       - name: Log in to Scaleway Container Registry
         run: |
