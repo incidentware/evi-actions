@@ -14,14 +14,14 @@ on:
       ref:
         type: string
         required: false
-        default: ${{ github.ref }}
+        default: ${{github.ref}}
 
 env:
   buildtype: ${{inputs.buildtype}}
 
 jobs:
   build-and-push:
-    runs-on: [self-hosted, "${{ inputs.arch }}"]
+    runs-on: [self-hosted, "${{inputs.arch}}"]
 
     steps:
       - name: Checkout code
@@ -60,7 +60,17 @@ jobs:
         run: |
           GH_TOKEN=${{ secrets.ORG_REPO_ROBOT_SECRET }}
           cd $GITHUB_WORKSPACE/kubeconfigs
-          [ "${{env.buildtype}}" = "cloud" ] && ENVIRONMENT="staging" || ENVIRONMENT="${{env.buildtype}}"
+          REF="${{ inputs.ref }}"
+          BUILD_TYPE="${{ env.buildtype }}"
+          if [[ "$BUILD_TYPE" == "cloud" ]]; then
+            if [[ "$REF" == "refs/heads/prod" ]]; then
+              ENVIRONMENT="prod"
+            else
+              ENVIRONMENT="staging"
+            fi
+          else
+            ENVIRONMENT="$BUILD_TYPE"
+          fi
           git config user.name "${{secrets.ORG_REPO_ROBOT_USERNAME}}"
           git config user.email "${{secrets.ORG_REPO_ROBOT_EMAIL}}"
 
