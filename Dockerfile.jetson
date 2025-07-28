@@ -17,6 +17,7 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
 
 # Install ultralytics with minimal dependencies
 RUN pip3 install --no-cache-dir \
+    'packaging>=23.2,<24.0' \
     ultralytics==8.2.0 \
     flask==2.3.3 \
     flask-socketio==5.3.6 \
@@ -31,6 +32,6 @@ RUN pip3 install --no-cache-dir \
     reportlab==4.1.0
 
 # Install PyTorch and torchvision for CUDA 11.4 (JetPack 5.1.2)
-RUN pip3 install torch==2.0.0+nv23.05 torchvision==0.15.1+nv23.05 \
-  -f https://developer.download.nvidia.com/compute/redist/jp/v51
+RUN pip3 install torch==2.0.0 torchvision==0.15.1 \
+  --extra-index-url https://developer.download.nvidia.com/compute/redist/jp/v51
 
