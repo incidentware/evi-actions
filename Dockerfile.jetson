@@ -49,5 +49,8 @@ RUN pip3 install --no-cache-dir \
     rapidfuzz==3.6.1 \
     reportlab==4.1.0
 
-ADD https://developer.download.nvidia.com/compute/redist/jp/v51/pytorch/torch-2.0.0a0+8aa34602.nv23.03-cp38-cp38-linux_aarch64.whl /torch.whl
-RUN pip3 install --no-cache-dir /torch.whl && rm /torch.whl
+# Download + install NVIDIA JetPack-compatible PyTorch wheel
+RUN apt-get update && apt-get install -y wget && \
+    wget https://developer.download.nvidia.com/compute/redist/jp/v51/pytorch/torch-2.0.0a0+8aa34602.nv23.03-cp38-cp38-linux_aarch64.whl  -O /torch.whl && \
+    pip3 install --no-cache-dir /torch.whl && \
+    rm /torch.whl
