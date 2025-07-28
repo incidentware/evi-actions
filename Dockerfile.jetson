@@ -1,6 +1,7 @@
 # Base image for JetPack 5, image that is compatible with EVI devices jetpack
-FROM nvcr.io/nvidia/l4t-pytorch:r35.4.1-pth2.0-py3
+FROM nvcr.io/nvidia/l4t-base:35.4.1
 
+# Install essential dependencies
 RUN apt-get update && apt-get install -y --no-install-recommends \
     python3-pip \
     libjpeg-dev \
@@ -14,6 +15,28 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
     python3-opencv \
     && rm -rf /var/lib/apt/lists/*
 
+# Install cuda libraries
+
+# Add NVIDIA’s APT repo for JetPack 5.1.2
+RUN apt-get update && apt-get install -y --no-install-recommends \
+    gnupg2 curl ca-certificates && \
+    curl -fsSL https://repo.download.nvidia.com/jetson/jetson-ota-public.asc | apt-key add - && \
+    echo "deb https://repo.download.nvidia.com/jetson/common r35.4 main" > /etc/apt/sources.list.d/nvidia-l4t.list && \
+    echo "deb https://repo.download.nvidia.com/jetson/t234 r35.4 main" >> /etc/apt/sources.list.d/nvidia-l4t.list
+
+# Install runtime CUDA libraries only (minimal)
+RUN apt-get update && apt-get install -y --no-install-recommends \
+    cuda-cudart-11-4 \
+    libcudnn8 \
+    libnvinfer8 \
+    libnvonnxparsers8 \
+    libnvparsers8 \
+    libnvinfer-plugin8 \
+    libcusparse-11-4 \
+    cuda-nvtx-11-4 \
+    libcufft-11-4 \
+    libcurand-11-4
+ 
 # Install ultralytics with minimal dependencies
 RUN pip3 install --no-cache-dir \
     'packaging>=23.2,<24.0' \
@@ -29,4 +52,9 @@ RUN pip3 install --no-cache-dir \
     pypdf==3.17.4 \
     rapidfuzz==3.6.1 \
     reportlab==4.1.0
+
+RUN apt-get update && apt-get install -y wget && \
+    wget "https://developer.download.nvidia.com/compute/redist/jp/v51/pytorch/torch-2.0.0a0%2B8aa34602.nv23.03-cp38-cp38-linux_aarch64.whl" && \
+    pip3 install --no-cache-dir torch-2.0.0a0+8aa34602.nv23.03-cp38-cp38-linux_aarch64.whl && \
+    rm torch-2.0.0a0+8aa34602.nv23.03-cp38-cp38-linux_aarch64.whl
 
