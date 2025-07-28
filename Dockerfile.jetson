@@ -1,5 +1,5 @@
 # Base image for JetPack 5, image that is compatible with EVI devices jetpack
-FROM nvcr.io/nvidia/l4t-pytorch:r35.4.1
+FROM nvcr.io/nvidia/l4t-pytorch:r35.4.1-pth2.0-py3
 
 RUN apt-get update && apt-get install -y --no-install-recommends \
     python3-pip \
