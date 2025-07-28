@@ -31,8 +31,12 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
     libnvinfer8 \
     libnvonnxparsers8 \
     libnvparsers8 \
-    libnvinfer-plugin8
-
+    libnvinfer-plugin8 \
+    libcusparse-11-4 \
+    cuda-nvtx-11-4 \
+    libcufft-11-4 \
+    libcurand-11-4
+ 
 # Install ultralytics with minimal dependencies
 RUN pip3 install --no-cache-dir \
     'packaging>=23.2,<24.0' \
