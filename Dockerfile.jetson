@@ -31,3 +31,5 @@ RUN pip3 install --no-cache-dir \
     rapidfuzz==3.6.1 \
     reportlab==4.1.0
 
+ADD https://github.com/pytorch/vision/releases/download/0.15.2/torchvision-0.15.2-cp38-cp38-linux_aarch64.whl /torchvision.whl
+RUN pip3 install --no-cache-dir /torchvision.whl && rm /torchvision.whl
