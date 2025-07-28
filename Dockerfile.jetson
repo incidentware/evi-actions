@@ -15,6 +15,24 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
     python3-opencv \
     && rm -rf /var/lib/apt/lists/*
 
+# Install cuda libraries
+
+# Add NVIDIA’s APT repo for JetPack 5.1.2
+RUN apt-get update && apt-get install -y --no-install-recommends \
+    gnupg2 curl ca-certificates && \
+    curl -fsSL https://repo.download.nvidia.com/jetson/jetson-ota-public.asc | apt-key add - && \
+    echo "deb https://repo.download.nvidia.com/jetson/common r35.4 main" > /etc/apt/sources.list.d/nvidia-l4t.list && \
+    echo "deb https://repo.download.nvidia.com/jetson/t234 r35.4 main" >> /etc/apt/sources.list.d/nvidia-l4t.list
+
+# Install runtime CUDA libraries only (minimal)
+RUN apt-get update && apt-get install -y --no-install-recommends \
+    cuda-cudart-11-4 \
+    libcudnn8 \
+    libnvinfer8 \
+    libnvonnxparsers8 \
+    libnvparsers8 \
+    libnvinfer-plugin8
+
 # Install ultralytics with minimal dependencies
 RUN pip3 install --no-cache-dir \
     'packaging>=23.2,<24.0' \
