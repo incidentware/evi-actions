@@ -1,5 +1,5 @@
-# Base image for JetPack 6 (latest L4T runtime)
-FROM nvcr.io/nvidia/l4t-base:r36.2.0
+# Base image for JetPack 5, image that is compatible with EVI devices jetpack
+FROM nvcr.io/nvidia/l4t-base:r35.4.1
 
 # Install essential dependencies
 RUN apt-get update && apt-get install -y --no-install-recommends \
@@ -12,6 +12,7 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
     gcc \
     cargo \
     nginx \
+    python3-opencv \
     && rm -rf /var/lib/apt/lists/*
 
 # Install ultralytics with minimal dependencies
@@ -20,7 +21,6 @@ RUN pip3 install --no-cache-dir \
     flask==2.3.3 \
     flask-socketio==5.3.6 \
     eventlet==0.33.3 \
-    opencv-python-headless==4.9.0.80 \
     numpy==1.26.4 \
     openai==1.10.0 \
     langchain==0.1.16 \ 
@@ -29,4 +29,8 @@ RUN pip3 install --no-cache-dir \
     pypdf==3.17.4 \
     rapidfuzz==3.6.1 \
     reportlab==4.1.0
+
+# Install PyTorch and torchvision for CUDA 11.4 (JetPack 5.1.2)
+RUN pip3 install torch==2.0.0+nv23.05 torchvision==0.15.1+nv23.05 \
+  -f https://developer.download.nvidia.com/compute/redist/jp/v51
 
