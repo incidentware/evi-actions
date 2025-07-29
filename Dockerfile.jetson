@@ -37,6 +37,10 @@ RUN apt-get update && apt-get install -y wget && \
     pip3 install --prefix=/build --no-cache-dir torch-2.0.0a0+8aa34602.nv23.03-cp38-cp38-linux_aarch64.whl && \
     rm torch-2.0.0a0+8aa34602.nv23.03-cp38-cp38-linux_aarch64.whl
 
+RUN find /build -name '*.pyc' -delete && \
+    find /build -type d -name '__pycache__' -exec rm -r {} + && \
+    rm -rf /build/**/*.dist-info
+
 FROM nvcr.io/nvidia/l4t-base:35.4.1
 
 RUN apt-get update && apt-get install -y --no-install-recommends \
