@@ -67,4 +67,5 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
     libcurand-11-4 \
     && rm -rf /var/lib/apt/lists/*
 
+ENV PYTHONPATH="/usr/local/lib/python3.8/site-packages:${PYTHONPATH}"
 COPY --from=builder /build /usr/local
