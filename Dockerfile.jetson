@@ -16,9 +16,6 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
 
 # Add NVIDIA’s APT repo for JetPack 5.1.2
 
-# Install runtime CUDA libraries only (minimal)
-RUN apt-get update && apt-get install -y --no-install-recommends \
- 
 # Install ultralytics with minimal dependencies
 RUN pip3 install --prefix=/build --no-cache-dir \
     'packaging>=23.2,<24.0' \
@@ -67,7 +64,7 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
     libcusparse-11-4 \
     cuda-nvtx-11-4 \
     libcufft-11-4 \
-    libcurand-11-4
+    libcurand-11-4 \
     && rm -rf /var/lib/apt/lists/*
 
 COPY --from=builder /build /usr/local
