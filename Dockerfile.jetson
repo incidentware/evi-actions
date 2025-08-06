@@ -29,6 +29,7 @@ RUN pip3 install --prefix=/build --no-cache-dir \
     langchain_openai==0.0.8 \
     langchain_community==0.0.34 \
     pypdf==3.17.4 \
+    fastapi==0.116.1 \
     rapidfuzz==3.6.1 \
     reportlab==4.1.0
 
