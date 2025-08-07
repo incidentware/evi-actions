@@ -19,11 +19,12 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
 # Install ultralytics with minimal dependencies
 RUN pip3 install --prefix=/build --no-cache-dir \
     'packaging>=23.2,<24.0' \
-    ultralytics==8.2.0 \
+    ultralytics==8.3.175 \
     flask==2.3.3 \
     flask-socketio==5.3.6 \
     eventlet==0.33.3 \
     numpy==1.24.4 \
+    uvicorn-0.33.0 \
     openai==1.10.0 \
     langchain==0.1.16 \ 
     langchain_openai==0.0.8 \
@@ -37,6 +38,9 @@ RUN apt-get update && apt-get install -y wget && \
     wget "https://developer.download.nvidia.com/compute/redist/jp/v51/pytorch/torch-2.0.0a0%2B8aa34602.nv23.03-cp38-cp38-linux_aarch64.whl" && \
     pip3 install --prefix=/build --no-cache-dir torch-2.0.0a0+8aa34602.nv23.03-cp38-cp38-linux_aarch64.whl && \
     rm torch-2.0.0a0+8aa34602.nv23.03-cp38-cp38-linux_aarch64.whl
+
+RUN pip3 install --prefix=/build --no-cache-dir \
+    torchvision==0.15
 
 RUN find /build -name '*.pyc' -delete && \
     find /build -type d -name '__pycache__' -exec rm -r {} + && \
