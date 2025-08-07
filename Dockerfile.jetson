@@ -3,6 +3,7 @@ FROM nvcr.io/nvidia/l4t-base:35.4.1 AS builder
 
 RUN apt-get update && apt-get install -y --no-install-recommends \
     python3-pip \
+    python3-venv \
     libjpeg-dev \
     libopenblas-dev \
     libomp-dev \
