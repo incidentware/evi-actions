@@ -16,6 +16,7 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
 
 # Add NVIDIA’s APT repo for JetPack 5.1.2
 
+RUN python3 -m venv /build
 # Install ultralytics with minimal dependencies
 RUN pip3 install --prefix=/build --no-cache-dir \
     'packaging>=23.2,<24.0' \
