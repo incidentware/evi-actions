@@ -37,7 +37,7 @@ RUN pip3 install --prefix=/build --no-cache-dir \
 
 RUN apt-get update && apt-get install -y wget && \
     wget -O ./pytorch_custom.whl "https://developer.download.nvidia.com/compute/redist/jp/v51/pytorch/torch-2.0.0a0%2B8aa34602.nv23.03-cp38-cp38-linux_aarch64.whl" && \
-    pip3 install --no-index --find-links=. --prefix=/build --no-cache-dir ./pytorch_custom.whl && \
+    pip3 install --no-index --find-links=. --prefix=/build --no-cache-dir pytorch_custom.whl && \
     rm ./pytorch_custom.whl
 
 RUN find /build -name '*.pyc' -delete && \
