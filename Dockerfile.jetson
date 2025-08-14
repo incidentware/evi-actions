@@ -35,7 +35,8 @@ RUN pip3 install --prefix=/build --no-cache-dir \
     fastapi==0.116.1 \
     torchvision==0.15.1 \
     rapidfuzz==3.6.1 \
-    reportlab==4.1.0
+    reportlab==4.1.0 \
+    scikit-image
 
 RUN bash -c "source /build/bin/activate && pip3 uninstall -y torch"
 RUN apt-get update && apt-get install -y wget && \
