@@ -75,7 +75,6 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
     cuda-cupti-11-4 \
     libcufft-11-4 \
     libcurand-11-4 \
-    libcupti-dev-11-4 \
     sqlite3 \
     && rm -rf /var/lib/apt/lists/*
 
