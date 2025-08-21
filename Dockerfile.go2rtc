@@ -1,0 +1,11 @@
+# Start from the official go2rtc image
+FROM alexxit/go2rtc:1.9.9
+
+RUN mkdir -p /config
+
+COPY go2rtc.yaml /config/go2rtc.yaml
+
+EXPOSE 1984 8554 8555 1935
+
+# Start go2rtc
+CMD ["go2rtc", "-c", "/config/go2rtc.yaml"]

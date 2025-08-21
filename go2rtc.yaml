@@ -1,0 +1,28 @@
+api:
+  listen: ":1984"
+rtsp:
+  listen: ":8554"
+webrtc:
+  listen: ":8555/tcp"
+rtmp:
+  listen: ":1935"
+log:
+  level: debug
+  
+streams:
+  car_speed: null
+  PPE_final_cut_cropped: null
+  etalon_fireexting: null
+  fire_indoor_warehouse: null
+  forklift_person: null
+  invasion_weapon: null
+  people_count: null
+  smoke_indoor_plane: null
+  smoke_indoor_warehouse: null
+  smoke_outdoor_container: null
+  test_stream_1: null
+  test_stream_2: null
+  test_stream_3: null
+  test_stream_4: null
+  test_stream_5: null
+  test_stream_6: null
