@@ -31,5 +31,20 @@ RUN pip3 install --no-cache-dir \
     langchain_community \
     pypdf \
     rapidfuzz \
-    reportlab
-
+    reportlab \
+    fastapi \
+    uvicorn \
+    starlette \
+    websockets \
+    pydantic \
+    pydantic_core \
+    annotated-types \
+    torch==2.7.0 \
+    torchvision \
+    ultralytics \
+    ultralytics-thop \
+    opencv-python \
+    pillow \
+    scikit-image \
+    requests \
+    typing_extensions
