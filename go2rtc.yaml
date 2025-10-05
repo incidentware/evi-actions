@@ -11,6 +11,7 @@ log:
   
 streams:
   car_speed: null
+  boat: null
   PPE_final_cut_cropped: null
   etalon_fireexting: null
   fire_indoor_warehouse: null
