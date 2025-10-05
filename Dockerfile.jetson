@@ -76,9 +76,8 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
     libcufft-11-4 \
     libcurand-11-4 \
     sqlite3 \
+    rclone \
     && rm -rf /var/lib/apt/lists/*
-
-RUN curl -fsSL https://rclone.org/install.sh | bash
 
 ADD https://github.com/just-containers/s6-overlay/releases/download/v3.1.6.2/s6-overlay-noarch.tar.xz /tmp/
 ADD https://github.com/just-containers/s6-overlay/releases/download/v3.1.6.2/s6-overlay-aarch64.tar.xz /tmp/
