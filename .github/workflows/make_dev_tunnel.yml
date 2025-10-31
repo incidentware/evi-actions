@@ -42,6 +42,16 @@ jobs:
           path: kubeconfigs
           token: ${{ secrets.ORG_REPO_ROBOT_SECRET }}
 
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'  # or whatever version you need
+
+      - name: Install py packages
+        run: |
+          python -m pip install --upgrade pip
+          pip install pyyaml
+
       - name: Deploy dev configuration to cluster
         run: |
           GH_TOKEN=${{ secrets.ORG_REPO_ROBOT_SECRET }}
