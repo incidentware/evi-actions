@@ -45,8 +45,7 @@ jobs:
 
       - name: Install py packages
         run: |
-          apt install python3-yaml || true
-          pip3 install pyyaml || true
+          pip install pyyaml || true
 
       - name: Checkout deployed configuration
         uses: actions/checkout@v3
