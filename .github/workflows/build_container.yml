@@ -43,9 +43,15 @@ jobs:
         run: |
           docker push $CONTAINER_PATH
 
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'  # or whatever version you need
+
       - name: Install py packages
         run: |
-          pip install pyyaml || true
+          python -m pip install --upgrade pip
+          pip install pyyaml
 
       - name: Checkout deployed configuration
         uses: actions/checkout@v3
