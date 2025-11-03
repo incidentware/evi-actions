@@ -11,6 +11,7 @@ on:
         options:
           - nvidia
           - jetson
+          - jetson_jp6
       arch:
         description: "Target architecture"
         required: true

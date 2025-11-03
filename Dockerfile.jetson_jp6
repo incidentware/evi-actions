@@ -1,0 +1,89 @@
+# Base image for JetPack 5, image that is compatible with EVI devices jetpack
+FROM ubuntu:22.04 AS builder
+
+RUN apt-get update && apt-get install -y --no-install-recommends \
+    python3-pip \
+    python3-venv \
+    libjpeg-dev \
+    libopenblas-dev \
+    libomp-dev \
+    ffmpeg \
+    musl \
+    gcc \
+    cargo \
+    nginx \
+    python3-opencv \
+    && rm -rf /var/lib/apt/lists/*
+
+# Add NVIDIA’s APT repo for JetPack 5.1.2
+
+RUN python3 -m venv /build
+# Install ultralytics with minimal dependencies
+RUN pip3 install --prefix=/build --no-cache-dir \
+    'packaging' \
+    ultralytics \
+    flask \
+    flask-socketio \
+    eventlet \
+    numpy \
+    uvicorn \
+    openai \
+    langchain \ 
+    langchain_openai \
+    langchain_community \
+    pypdf \
+    fastapi \
+    rapidfuzz \
+    reportlab \
+    scikit-image
+
+RUN bash -c "source /build/bin/activate && pip3 uninstall -y torch torchvision && \
+    pip3 install --prefix=/build --no-cache-dir \
+    https://github.com/ultralytics/assets/releases/download/v0.0.0/torch-2.5.0a0+872d972e41.nv24.08-cp310-cp310-linux_aarch64.whl \
+    https://github.com/ultralytics/assets/releases/download/v0.0.0/torchvision-0.20.0a0+afc54f7-cp310-cp310-linux_aarch64.whl"
+
+RUN find /build -name '*.pyc' -delete && \
+    find /build -type d -name '__pycache__' -exec rm -r {} + && \
+    rm -rf /build/**/*.dist-info
+
+FROM ubuntu:22.04
+
+RUN apt-get update && apt-get install -y --no-install-recommends \
+    gnupg2 curl ca-certificates && \
+    curl -fsSL https://repo.download.nvidia.com/jetson/jetson-ota-public.asc | apt-key add - && \
+    echo "deb https://repo.download.nvidia.com/jetson/common r36.4 main" > /etc/apt/sources.list.d/nvidia-l4t.list && \
+    echo "deb https://repo.download.nvidia.com/jetson/t234 r36.4 main" >> /etc/apt/sources.list.d/nvidia-l4t.list
+
+# Install essential dependencies
+RUN apt-get update && apt-get install -y --no-install-recommends \
+    python3-pip \
+    libjpeg-dev \
+    libopenblas-dev \
+    libomp-dev \
+    ffmpeg \
+    musl \
+    nginx \
+    python3-opencv \
+    cuda-cudart-12-1 \
+    libcudnn8 \
+    libnvinfer8 \
+    libnvonnxparsers8 \
+    libnvparsers8 \
+    libnvinfer-plugin8 \
+    libcusparse-12-1 \
+    cuda-nvtx-12-1 \
+    cuda-cupti-12-1 \
+    libcufft-12-1 \
+    libcurand-12-1 \
+    sqlite3 \
+    rclone \
+    && rm -rf /var/lib/apt/lists/*
+
+ADD https://github.com/just-containers/s6-overlay/releases/download/v3.1.6.2/s6-overlay-noarch.tar.xz /tmp/
+ADD https://github.com/just-containers/s6-overlay/releases/download/v3.1.6.2/s6-overlay-aarch64.tar.xz /tmp/
+RUN tar -C / -Jxpf /tmp/s6-overlay-noarch.tar.xz && \
+    tar -C / -Jxpf /tmp/s6-overlay-aarch64.tar.xz && \
+    rm -f /tmp/s6-overlay-*.tar.xz
+
+ENV PYTHONPATH="/usr/local/lib/python3.8/site-packages:${PYTHONPATH}"
+COPY --from=builder /build /usr/local
