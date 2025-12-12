@@ -27,7 +27,7 @@ jobs:
       - name: Checkout code
         uses: actions/checkout@v3
         with:
-           ref: ${{ inputs.ref }}
+          ref: ${{ inputs.ref }}
       - name: Log in to Scaleway Container Registry
         run: |
           REPO_NAME="$(basename ${{ github.repository }})"
@@ -37,7 +37,11 @@ jobs:
 
       - name: Build and Tag Docker Image
         run: |
-          docker build --build-arg CONFIGURATION_TYPE=${{env.buildtype}} -t $CONTAINER_PATH -f Dockerfile.${{env.buildtype}}  .
+          docker build \
+            --build-arg CONFIGURATION_TYPE=${{ env.buildtype }} \
+            --build-arg BUILD_VERSION=${{ github.sha }} \
+            -t $CONTAINER_PATH \
+            -f Dockerfile.${{ env.buildtype }} .
 
       - name: Push Docker Image to Docker Hub for main branch
         run: |
@@ -46,7 +50,7 @@ jobs:
       - name: Set up Python
         uses: actions/setup-python@v5
         with:
-          python-version: '3.11'  # or whatever version you need
+          python-version: "3.11" # or whatever version you need
 
       - name: Install py packages
         run: |
@@ -113,4 +117,3 @@ jobs:
             exit 1
           fi
           cd $GITHUB_WORKSPACE
-
