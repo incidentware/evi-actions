@@ -34,7 +34,11 @@ jobs:
 
       - name: Build and Tag Docker Image
         run: |
-          docker build --build-arg BUILD_ENVIRONMENT=${ARTIFACTORY_ENV} -t $CONTAINER_PATH . -f Dockerfile.${{inputs.buildtype}}
+          docker build \
+            --build-arg BUILD_ENVIRONMENT=${ARTIFACTORY_ENV} \
+            --build-arg BUILD_VERSION=${{ github.sha }} \
+            -t $CONTAINER_PATH . \
+            -f Dockerfile.${{inputs.buildtype}}
 
       - name: Push Docker Image to Docker Hub for main branch
         run: |
@@ -44,7 +48,7 @@ jobs:
         uses: actions/checkout@v3
         env:
           GITHUB_TOKEN: ${{ secrets.ORG_REPO_ROBOT_SECRET }}
- 
+
         with:
           repository: incidentware/kubeconfigs
           ref: main
@@ -54,12 +58,12 @@ jobs:
       - name: Set up kubectl
         uses: azure/setup-kubectl@v3
         with:
-          version: 'latest'
+          version: "latest"
 
       - name: Set up Python
         uses: actions/setup-python@v5
         with:
-          python-version: '3.11'  # or whatever version you need
+          python-version: "3.11" # or whatever version you need
 
       - name: Install py packages
         run: |
