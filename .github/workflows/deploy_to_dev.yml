@@ -44,6 +44,15 @@ jobs:
         run: |
           docker push $CONTAINER_PATH
 
+      - name: Debug robot secret presence
+        run: |
+          if [ -z "${{ secrets.ORG_REPO_ROBOT_SECRET }}" ]; then
+            echo "ORG_REPO_ROBOT_SECRET is EMPTY"
+            exit 1
+          else
+            echo "ORG_REPO_ROBOT_SECRET is PRESENT"
+          fi
+
       - name: Checkout deployed configuration
         uses: actions/checkout@v3
         env:
